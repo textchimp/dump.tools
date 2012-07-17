@@ -1,0 +1,28 @@
+{
+  "name": "dump.tools",
+  "version": "0.1",
+  "description": "Dump power!",
+  "background_page": "bg.html",
+  "browser_action": {
+    "default_icon": "dump_16.png",
+    "popup": "popup.html"
+  },
+  "permissions" : [
+    "contextMenus",
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "unlimitedStorage"
+   ],
+  "minimum_chrome_version" : "6.0.0.0",
+  "icons" : {
+    "16" : "dump_16.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://dump.fm/chat*"],
+      "js": ["jquery-1.6.1.js", "dumpfm.js"],
+	  "css": ["dump.css"]
+    }
+  ]
+}

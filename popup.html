@@ -1,0 +1,528 @@
+<html>
+<head>
+<style>
+body {
+  min-width:440px;
+  overflow-x:hidden;
+  height: 900px;
+  background-color: #000000;
+  color: #CCC;
+}
+
+
+img {
+  display:none;
+  /*
+  margin:5px;
+  border:2px solid black;
+  vertical-align:middle;
+  max-width:100px;
+  max-height:100px;
+  float: left;
+  */
+}
+
+a {
+ padding: 4px;
+ margin: 2px;
+}
+
+a.animating canvas{
+ display: none;
+}
+
+a img.anim8{
+ display: inline;
+ position: relative;
+ left: 0; 
+ top: 0;
+}
+
+
+a.normal canvas{
+ display: inline;
+}
+
+
+
+div.ct{
+ position: relative; 
+ float: left;  //also causes top-alignment, leider
+ left: 0; 
+ top: 0;
+}
+
+img.ot{
+ display: inline;
+ position: absolute; 
+ top: 1;
+ height: 16px;
+ width: 16px;
+  //color: white;
+}
+
+div.dmenu{
+ display: inline;
+ position: absolute; 
+ top: 1;
+ height: 40px;
+ width: 20px;
+ color: white;
+ border: 4px solid red;
+}
+
+
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" type="text/javascript"></script>
+<script>
+
+
+// parseUri 1.2.2 from http://blog.stevenlevithan.com/archives/parseuri
+// (c) Steven Levithan <stevenlevithan.com>, MIT License
+// timb: todo: this can't deal with @s in urls correctly. ex: http://www.classicbattletech.com/images/gallery/Combat_Operations_Cover@1280x960.jpg
+function parseUri (str) {
+	var	o   = parseUri.options,
+		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+		uri = {},
+		i   = 14;
+
+	while (i--) uri[o.key[i]] = m[i] || "";
+
+	uri[o.q.name] = {};
+	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+		if ($1) uri[o.q.name][$1] = $2;
+	});
+
+	return uri;
+};
+
+parseUri.options = {
+	strictMode: false,
+	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+	q:   {
+		name:   "queryKey",
+		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+	},
+	parser: {
+		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+	}
+};
+// end parseUri
+
+// this doesn't properly deal with eg, .gov.uk .co.ck etc
+function parseDomain(host){
+  var chunks = host.split(".")
+  if (chunks.length == 1) return chunks[0]
+  else return chunks[chunks.length - 2]
+}
+
+
+/*
+
+var req = new XMLHttpRequest();
+req.open(
+    "GET",
+    "http://api.flickr.com/services/rest/?" +
+        "method=flickr.photos.search&" +
+        "api_key=90485e931f687a9b9c2a66bf58a3861a&" +
+        "text=hello%20world&" +
+        "safe_search=1&" +  // 1 is "safe"
+        "content_type=1&" +  // 1 is "photos only"
+        "sort=relevance&" +  // another good one is "interestingness-desc"
+        "per_page=20",
+    true);
+req.onload = showPhotos;
+req.send(null);
+
+function showPhotos() {
+  var photos = req.responseXML.getElementsByTagName("photo");
+
+  for (var i = 0, photo; photo = photos[i]; i++) {
+    var img = document.createElement("image");
+    img.src = constructImageURL(photo);
+    document.body.appendChild(img);
+  }
+}
+
+// See: http://www.flickr.com/services/api/misc.urls.html
+function constructImageURL(photo) {
+  return "http://farm" + photo.getAttribute("farm") +
+      ".static.flickr.com/" + photo.getAttribute("server") +
+      "/" + photo.getAttribute("id") +
+      "_" + photo.getAttribute("secret") +
+      "_s.jpg";
+}
+
+*/
+</script>
+<script>
+
+//localStorage["blackBgURLs"] = 'testy bleep blah';
+
+
+
+
+ //console.log(localStorage);
+
+
+
+
+
+
+
+/*
+var u = localStorage["blackBgURLs"];
+console.log(localStorage);
+for(var i=i; i < u.length; i++) {
+  var tmp;
+  tmp = document.createElement('div');
+  tmp.innerHTML = u[i];
+  document.body.appendChild(tmp);
+}
+*/
+
+//var data = JSON.parse(localStorage[request.url]);
+
+var toDump = function(){
+
+   var dtab = chrome.extension.getBackgroundPage().dump_tab;
+   console.log('msg to ' + dtab, this.href);
+    chrome.tabs.sendRequest(dtab, {action:'dump_into', 'url':this.href}, function(response) {
+    console.log(response.status);  
+   });
+}
+
+
+$(function(){
+
+var count = 0;
+
+for (var key in localStorage){
+  //console.log(localStorage[key]); 
+
+  
+
+  if(key.indexOf('http://')==0) { 
+
+
+    //var i = JSON.parse(localStorage[key]);
+    //console.log(i.date);
+    //var img = document.createElement("image");
+    //img.src = key;
+    //console.log(key, ' ::: ', img.src, img);
+    //document.body.appendChild(img);
+
+/*
+    var main = document.getElementById('main');
+    main.innerHTML += '<img src="' + key + '" onclick="toDump(this)"><br>\n';
+*/
+
+
+	var imgobj = JSON.parse(localStorage[key]);
+
+	var img = new Image();
+
+	if(imgobj.hasOwnProperty("thumbnail_cache") && imgobj.thumbnail_cache.length) {
+
+	  img.src = imgobj.thumbnail_cache;
+
+	  if(imgobj.width && imgobj.height) {
+		img.width  = imgobj.width;
+		img.height = imgobj.height;
+	  }
+
+	  img.real_url = key;
+	  //img.cache_url = imgobj.thumbnail_cache;
+
+	} else if(!imgobj.hasOwnProperty("thumbnail_cache")){
+
+				 //console.log('no thumbnail yet for ' + key);
+
+	  img.src = key;
+	  img.no_thumbnail = true;
+	  img.real_url = key;
+	  
+	}
+
+	img.animated = (parseUri(key)["file"].toLowerCase().substr(-3) == "gif") ? true : false;
+
+	img.onload = function(){
+	  
+      count++;
+  		
+  	  if(this.hasOwnProperty("no_thumbnail")) {
+				 //console.log('adding thumbnail enc', img, img.real_url);
+  	    // no cache image yet
+  	    var scaleFactor = 0.0;
+  	    var width = this.width;
+  	    var height = this.height;
+  	    var maxWidth = 100; //SpaceFill.config.columnWidth
+  	    var maxHeight = Math.floor(maxWidth * 1.2);
+
+  	    if (width > maxWidth) {
+  	  	scaleFactor = maxWidth / width;
+  	  	width = maxWidth;
+  	  	height = Math.floor(height * scaleFactor);
+  	    } else if (height > maxHeight) {
+  	  	scaleFactor = maxHeight / height;
+  	  	height = maxHeight;
+  	  	width = Math.floor(width * scaleFactor);
+  	    }
+  	    
+  	    this.width = width;
+  	    this.height = height;
+  	  } 
+
+  	  
+  	  // create canvas image, no animation
+  	  var c = document.createElement("canvas");
+  	  c.width = this.width;
+  	  c.height = this.height;
+  	  c.id = "c" + count;
+  	  c.class = 'cnv';
+  	  var ctx = c.getContext('2d');
+  	  ctx.drawImage(this, 0, 0, c.width, c.height);
+  	  
+
+	  if(this.hasOwnProperty("no_thumbnail")) {
+		// save thumbnail
+		var imgobj = JSON.parse(localStorage[this.src]);
+		imgobj.thumbnail_cache = c.toDataURL("image/png");
+		imgobj.width = this.width;
+		imgobj.height = this.height;
+
+		localStorage[this.src] = JSON.stringify(imgobj);
+		//console.log(imgobj);		
+	  }
+
+
+  	  var a = document.createElement("a")
+  	  a.onclick = toDump;  //function(){ alert(this.href); return false; }; //falseFunc
+  	  a.href = this.real_url;
+  	  a.id = "a" + count;
+  	  a.width = this.width;
+  	  a.height = this.height;
+  	  
+  	  if(this.animated) {
+  	    a.className = "animated";
+  	  } else {
+  	    a.className = "static";
+  	  }
+  	  
+  	  a.style.width = this.width + "px"
+  	  a.style.height = this.height + "px"
+  	  //a.hover = function(){ alert(this.href); };
+  	  a.appendChild(c);
+  	  
+  	  var d = document.createElement("div");
+  	  d.className = "ct";
+  	  d.width = this.width;
+  	  d.height = this.height;
+  	  d.style.width = this.width + "px"
+  	  d.style.height = this.height + "px"
+  	  d.appendChild(a);
+  	  
+  	  document.body.insertBefore(d, this);
+
+  	};
+
+	document.body.appendChild(img);
+
+/*******************************
+
+ var img = new Image();
+ img.src = key;
+ img.animated = (parseUri(key)["file"].toLowerCase().substr(-3) == "gif") ? true : false;
+
+ //img.width = 100;
+ //img.height = 100;
+
+ var width  = 100; //img.width;
+ var height = 100; //img.height;
+
+ 
+
+ //console.log(img.width, img.height);
+ var scaleFactor = 0.0;
+
+ var maxWidth = 100; //SpaceFill.config.columnWidth
+ var maxHeight = Math.floor(maxWidth * 1.2);
+
+  if (width > maxWidth) {
+    scaleFactor = maxWidth / width;
+    width = maxWidth;
+    height = Math.floor(height * scaleFactor);
+  } else if (height > maxHeight) {
+    scaleFactor = maxHeight / height;
+    height = maxHeight;
+    width = Math.floor(width * scaleFactor);
+  }
+
+  img.adjWidth = width;
+  img.adjHeight = height;
+
+**************************/
+
+  /*
+  img.onload = function() {
+
+    count++;
+							
+	var width  = this.width;
+	var height = this.height;
+
+
+	var scaleFactor = 0.0;
+
+	var maxWidth = 100; //SpaceFill.config.columnWidth
+	var maxHeight = Math.floor(maxWidth * 1.2);
+
+	if (width > maxWidth) {
+	  scaleFactor = maxWidth / width;
+	  width = maxWidth;
+	  height = Math.floor(height * scaleFactor);
+	} else if (height > maxHeight) {
+	  scaleFactor = maxHeight / height;
+	  height = maxHeight;
+	  width = Math.floor(width * scaleFactor);
+	}
+
+	this.adjWidth = width;
+	this.adjHeight = height;
+
+	//console.log(this.width, this.height, '===', this.adjWidth, this.adjHeight);
+
+	this.width = width;
+	this.height = height;
+ 
+	var c = document.createElement("canvas");
+	c.width = this.width;
+	c.height = this.height;
+	c.id = "c" + count;
+	var ctx = c.getContext('2d');
+	ctx.drawImage(this, 0, 0, c.width, c.height);
+
+	//this.appendChild(c);  
+	document.body.insertBefore(c, this);
+ 
+	var imgobj = JSON.parse(localStorage[this.src]);
+	//console.log(i.date);
+
+	//var dataURL = c.toDataURL("image/png");
+	//console.log(dataURL.length);
+	//imgobj.thumbnail_cache = dataURL;
+	
+	imgobj.width = this.width;
+	imgobj.height = this.height;
+
+    //localStorage[this.src] = JSON.stringify(imgobj);
+	//console.log(this.src, imgobj);
+
+  };
+
+  document.body.appendChild(img);
+
+  */
+
+  /*
+  var c = document.createElement("canvas")
+  c.width = img.width
+  c.height = img.height
+  c.id = "c" + count;
+  var ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, c.width, c.height)
+	
+  var dataURL = c.toDataURL("image/png");
+
+  var a = document.createElement("a")
+  a.onclick = function(){ return false; }; //falseFunc
+  a.href = img.src
+  a.style.width = width + "px"
+  a.style.height = height + "px"
+  */
+//  a.appendChild(c);
+//  document.body.appendChild(a);
+  
+
+  }
+
+}
+
+var menufunc = function(e){ 
+
+  //$('<div id="dm" style="width: 20px; height: 20px; position: absolute; top: 0; left: 50;">del<br>tag</div>').appendTo(this);
+
+  var d = document.createElement("div");
+  d.className = "dmenu";
+  d.width = 20;
+  d.height = 20;
+  //$(d).html("del<br>tag");
+  d.innerHTML = "del<br>tag";
+  this.appendChild(d);
+
+  console.log(d);
+  return false;
+};
+
+
+var hoverfunc = function(e) {
+  if (e.type == 'mouseenter') {
+	 var i = new Image();
+	 i.src = this.href;
+	 i.width = this.width;
+	 i.height = this.height;
+	 $(i).addClass('anim8'); //make img visible
+	 $(this).find('canvas').hide();
+	 $(this).append(i);
+
+     var icon = new Image();
+     icon.src = "star_16.png";
+     icon.className = 'ot';
+  	 icon.style.left =  this.width - 14;
+
+     $(icon).click(menufunc);
+	 
+	 $(this).append(icon);
+
+   } else {
+	$(this).find('img').remove();
+	$(this).find('img.ot').remove();
+	$(this).find('canvas').show();
+   }
+ }
+
+
+ var staticimg_hoverfunc  = function(e) {
+
+  if (e.type == 'mouseenter') {
+  
+	 var icon = new Image();
+	 icon.src = "star_16.png";
+	 icon.className = 'ot';
+	 icon.style.left =  this.width - 14;
+	 $(icon).click(function(){ console.log(this.width, this.height); return false; });
+	 this.appendChild(icon);
+
+  } else {
+	$(this).find('img.ot').remove();
+  }
+
+ }
+
+
+
+ $('a.animated').live('hover', hoverfunc);
+ $('a.static').live('hover', staticimg_hoverfunc);
+
+
+});
+
+console.log(chrome.extension.getBackgroundPage().dump_tab);
+</script>
+</head>
+<html>
+<body>
+<div id="main"></div>
+</body>
+</html>
