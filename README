@@ -6,6 +6,14 @@ textchimp@gmail.com (c) 2012
 (Tested only on Chromium 18.0.1025.151 (Developer Build 130497) Ubuntu 10.04)
 
 
+Installation:
+-------------
+
+In the 'Extensions' settings page of Chrome, click 'Developer mode' on the top 
+right to bring up a few extra buttons, and then click 'Load unpacked extension';
+you'll be asked to select the extension directory (which is wherever you downloaded
+or checked out this thing to). 
+
 Keyboard bindings:
 ------------------
 
