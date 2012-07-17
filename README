@@ -1,7 +1,7 @@
 
 Dump.tools Chrome extension, v 0.1Beta
 ======================================
-textchimp@gmail.com (c) 2012 
+textchimp (c) 2012 
 
 (Tested only on Chromium 18.0.1025.151 (Developer Build 130497) Ubuntu 10.04)
 
@@ -46,7 +46,9 @@ Issues:
   URLS... more CSS float tweaking
 
 * Current maximum of 5Mb storage for chrome extensions limits number of permanent
-  favourites, as thumbnails are stored using DataURLs
+  favourites, as thumbnails are stored using DataURLs. Would be nice to have a way
+  around this, or a better way to cache thumbnails, that doesn't slow everything
+  down (see below).
 
 * The layout in the permanent favourites popup is a bit messy and chaotic, needs a 
   cleanup. Also no way currently to delete items from the favourites, and (though
