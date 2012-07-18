@@ -213,8 +213,19 @@ $('#msgSubmit').click(function(){ $('#preview').hide(); $('#palette').hide(); })
 ";
 
 
+
+
 // perform injection of all the above code snippets
 injectScriptSimple(pc + pc2 + live_onclick_replace + prevdef + new_submit_handlers);
+
+
+// 'Ctrl + shift + z' key combo for background color toggle between black & white! kinder for dark rooms & stoned eyes
+
+var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {      /* white */ var newSS, styles='* { background: white ! important; color: black !important } :link, :link * { color: gray !important } :visited, :visited * { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);         } else { var newSS, styles='* { background: black ! important; color: white !important } :link, :link * { color: gray !important } :visited, :visited * { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);  }  bwtoggle = !bwtoggle;       }}";
+
+injectScriptSimple(zcol_no_jquery);
+
+
 
 
 function injectScriptSimple(source)
