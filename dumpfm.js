@@ -165,7 +165,7 @@ var prevfn = function() {   \n\
 	for (var i = 0, item; i < s.length; i++) {  \n\
       if(!s[i].length) continue; \n\
       item = s[i];  \n\
-	  if(item.indexOf('http://') == 0 || item.indexOf('https://')) {  \n\
+	  if(item.indexOf('http://') == 0 || item.indexOf('https://') == 0) {  \n\
         var urlWithoutParams = item.replace(/\\?.*$/i, \"\"); \n\
         if (urlWithoutParams.match(/\\.(jpg|jpeg|png|gif|bmp|svg|fid)$/i)) {   \n\
  	      news += '<li id=\"pitem-' + i + '\" style=\"margin: 3px 3px 3px 0; padding: 1px; float: left; max-width: 120px; height: 120px; border: 0px;\"  class=\"pitem\"><img id=\"pitem-' + i + '-img\" src=\"' + item + '\"  / style=\"max-width: 120px; max-height: 120px;\" /></li> ';  \n \
