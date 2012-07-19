@@ -120,7 +120,9 @@ case 9:   /* tab to focus chat text input */ \
   break;\
 }});';
 
-
+/* My preferred mouse-click handling: 
+   click to add to preview
+   ctrl+click to fave
 var live_onclick_replace = '\
 $(".content").die("click").live("click", function(e) {\
   if(!e.ctrlKey && !e.shiftKey){\
@@ -143,6 +145,45 @@ $(".content").die("click").live("click", function(e) {\
 	} else {\
             $(button).attr("src", Imgs.chatThumbBig);\
             $(button).stop().animate(Anim.chatThumbBig, "fast").animate(Anim.chatThumb, "fast", "swing");\
+	}\
+	Tag.favorite(button);\
+	return false;\
+    }\
+  }\
+);';
+*/
+
+
+/* mouse handling that behaves more as expected:
+   click to fave
+   ctrl+click to add to preview
+
+   Set as default by request
+*/
+
+var live_onclick_replace = '\
+$(".content").die("click").live("click", function(e) {\
+  console.log(e, e.which);\
+  if(e.ctrlKey && !e.shiftKey){\
+      if(typeof e.target.src == "undefined") \
+         return false; \
+	  $("#msgInput").val( $("#msgInput").val() + " " + e.target.src + " " );\
+	  $("#msgInput").focus();\
+      $("#msgInput").trigger("input"); \
+	  return false;\
+  } else if(!e.shiftKey && !e.ctrlKey){\
+	var tagName = e.target.tagName;\
+	if (tagName == "A" || tagName == "EMBED" || $(e.target).hasClass("youtube-thumb")) {\
+      return true;\
+	}\
+	var msg = $(this).parent(".msgDiv");\
+	var wasFavorited = msg.hasClass("favorite");\
+	var button = msg.find(".chat-thumb");\
+	if (wasFavorited) {\
+      $(button).attr("src", Imgs.chatThumbOff);\
+	} else {\
+      $(button).attr("src", Imgs.chatThumbBig);\
+      $(button).stop().animate(Anim.chatThumbBig, "fast").animate(Anim.chatThumb, "fast", "swing");\
 	}\
 	Tag.favorite(button);\
 	return false;\
