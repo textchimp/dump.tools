@@ -21,12 +21,16 @@ TAB: show/hide preview panel
 ESC: close preview window (also close Favourites panel if open, close Search results if Open)
   `: show/hide Favourites panel
 
+ctrl+shift+z: toggle between white/black background
+
 Mouse bindings:
 ---------------
 
-left-click:       copy image to preview panel (i.e., no longer favs)
-ctrl-left-click:  Fav
+ctrl-left-click:  copy image to preview panel (i.e., no longer favs)
 shift-left-click: copy image to permanent favourites
+
+(middle-click? would be nice to use this for copy-to-preview, but i can't
+ stop it from performing default behaviour of opening image in a new tab)
 
 
 Right click on any image in any tab and select 'Dump it!' to copy image URL to text 
