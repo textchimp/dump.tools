@@ -20,8 +20,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://dump.fm/chat*"],
-      "js": ["jquery-1.6.1.js", "dumpfm.js"],
+      "matches": ["http://dump.fm/chat*", "http://*.dump.fm/*"],
+      "js": ["jquery-1.6.1.js", "dumpfm.js", "manual-favs.js"],
 	  "css": ["dump.css"]
     }
   ]
