@@ -72,7 +72,7 @@ chrome.extension.onRequest.addListener(
 
 
 	  chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-	    if(tab.url == 'http://dump.fm/chat' 
+	    if(tab.url.indexOf('http://dump.fm/chat') == 0
            && changeInfo.status == "complete"
            && dump_tab == -1){       // don't reassign to new dump tab while old is open
 	      dump_tab = tabId;

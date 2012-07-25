@@ -40,6 +40,7 @@ getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.j
 //$('#userList').hide();
 
 
+// DEPRECATED in favour of new 'Manual Fav palette'
 // add url to saved images on shift-leftclick
 // (You can make this work on all pages by adding this to all.js and
 // putting 
@@ -50,16 +51,14 @@ getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.j
 // into the "content_scripts" section of manifest.json
 
 $(document).click(function(e) {
-if (e.shiftKey) {
-        //alert("shift+click: " + e.target.keys())
-		if(e.target.nodeName=='IMG') {
-			//console.log(e.target.src);   
-			chrome.extension.sendRequest({type: "add_url", url: e.target.src}, function(response) {
-				console.log(response.status);
-			});
-		}
-		return false;
+  if (e.shiftKey && e.ctrlKey) {
+	if(e.target.nodeName=='IMG') {
+		chrome.extension.sendRequest({type: "add_url", url: e.target.src}, function(response) {
+			console.log(response.status);
+		});
 	}
+	return false;
+  }
 });
 
 
@@ -100,11 +99,15 @@ var pc = " function paletteToChat(img){ var chatText = $('#msgInput').val();  if
 var pc2 = '$(document).keydown(function(e){ \
 switch(e.keyCode) {\
 case 27:  /* escape */ \
-  if($("#search-results-images").is(":visible")) { \
+  if ($("#search-results-images").is(":visible")) { \
     Search.resultsClear(); \
     Search.closed = true; \
     Search.$container.css("display", "none"); \
-    $("#search-controls").css("display", "none") \
+    $("#search-controls").css("display", "none"); \
+  } else if ($("#pb-palette").is(":visible")) { \
+    $("#pb-palette").hide(); \
+  } else if ($("#manual-palette").is(":visible")) { \
+    $("#manual-palette").hide(); \
   } else if ($("#palette").is(":visible")) { \
    paletteHide(); \
   } else if ($("#preview").is(":visible")) { \
@@ -120,10 +123,21 @@ case 9:   /* tab to focus chat text input */ \
   break;\
 }});';
 
-/* My preferred mouse-click handling: 
-   click to add to preview
-   ctrl+click to fave
-var live_onclick_replace = '\
+
+
+// check for switch_clicks flag, which means this is my version, & if so use weird mouse-click binding
+
+if(typeof localStorage.switch_clicks != "undefined" && localStorage.switch_clicks == "true"){ 
+
+	/* My preferred mouse-click handling: 
+	   click to add to preview
+	   ctrl+click to fave
+	*/
+
+$('#userList').hide();
+$('#showulist').attr('checked', false)
+
+	var live_onclick_replace = '\
 $(".content").die("click").live("click", function(e) {\
   if(!e.ctrlKey && !e.shiftKey){\
       if(typeof e.target.src == "undefined") \
@@ -151,19 +165,98 @@ $(".content").die("click").live("click", function(e) {\
     }\
   }\
 );';
-*/
+
+var pc2 = '$(document).keydown(function(e){ \
+switch(e.keyCode) {\
+case 49:  /* 1 */   \
+    if($(e.target).attr("id") != "msgInput" && \
+       $(e.target).attr("id") != "manual-add-url-txt" && \
+       !$(e.target).hasClass("taginput") && !$(e.target).hasClass("nameinput") \
+    ) { \
+\
+      if(typeof last_hover !== undefined && typeof last_hover.nodeName !== undefined &&   \
+        last_hover.nodeName == "IMG") { \
+\
+          if(typeof send_to_pb_img !== undefined) send_to_pb_img(last_hover.src); \
+\
+      } else { \
+      togglePBPalette(); \
+      } \
+    } \
+    break; \
+case 50:  /* 2 */   \
+    if($(e.target).attr("id") != "msgInput" && \
+       $(e.target).attr("id") != "manual-add-url-txt" && \
+       !$(e.target).hasClass("taginput") && !$(e.target).hasClass("nameinput") \
+    ) { \
+\
+      if(typeof last_hover !== undefined && typeof last_hover.nodeName !== undefined &&   \
+        last_hover.nodeName == "IMG") { \
+\
+          if(typeof send_to_pb_img_bg !== undefined) send_to_pb_img_bg(last_hover.src); \
+\
+      } else { \
+\
+        if( !$("#pb-palette").is(":visible")) { \
+          $("#seteditor-select option[value=\'http://tmv.proto.jp/\']").attr("selected", "selected").change(); \
+        } else { \
+        togglePBPalette(); \
+        } \
+\
+      } \
+    } \
+    break; \
+case 27:  /* escape */ \
+  if ($("#search-results-images").is(":visible")) { \
+    Search.resultsClear(); \
+    Search.closed = true; \
+    Search.$container.css("display", "none"); \
+    $("#search-controls").css("display", "none"); \
+  } else if ($("#pb-palette").is(":visible")) { \
+    $("#pb-palette").hide(); \
+  } else if ($("#manual-palette").is(":visible")) { \
+    $("#manual-palette").hide(); \
+  } else if ($("#palette").is(":visible")) { \
+   paletteHide(); \
+  } else if ($("#preview").is(":visible")) { \
+    $("#preview").hide(); \
+    return false; \
+  } \
+  break; \
+case 9:   /* tab to focus chat text input */ \
+  $("#msgInput").focus();\
+ e.stopPropagation(); \
+ e.preventDefault(); \
+ return false;	\
+  break;\
+}});';
 
 
-/* mouse handling that behaves more as expected:
-   click to fave
-   ctrl+click to add to preview
+// keep track of what's hovered over
+live_onclick_replace += '\
+var last_hover = {};\
+$("img").live("mouseenter", function(e) { \
+		last_hover = e.target;  \
+}).live("mouseleave", function(e) { \
+        last_hover = {};  \
+});\
+';
 
-   Set as default by request
-*/
 
-var live_onclick_replace = '\
+
+} else {
+
+	// stuff for everyone else
+
+	/* mouse handling that behaves more as expected:
+	   click to fave
+	   ctrl+click to add to preview
+	   
+	   Set as default by request
+	*/
+
+	var live_onclick_replace = '\
 $(".content").die("click").live("click", function(e) {\
-  console.log(e, e.which);\
   if(e.ctrlKey && !e.shiftKey){\
       if(typeof e.target.src == "undefined") \
          return false; \
@@ -190,6 +283,8 @@ $(".content").die("click").live("click", function(e) {\
     }\
   }\
 );';
+
+} // end me vs. them stuff
 
 
 var prevdef = "\
@@ -218,7 +313,7 @@ var prevfn = function() {   \n\
 	}  \n\
     news += '</ul><div style=\"position: absolute; top: 0; right: 40px; color: #999; cursor: pointer\" onclick=\"clear_preview()\">[clear]</div><div style=\"position: absolute; top: 0; right: 4px; color: #999; cursor: pointer\" onclick=\"close_preview()\"> [hide]</div>';  \n\
 	$('#preview').html(news);  \n\
-    console.log(total_width, $('#preview').width()); \n\
+    /* console.log(total_width, $('#preview').width()); */ \n\
     if(total_width > $('#preview').width() && total_width+50 < $(window).width()) {  \n\
       $('#preview').width(total_width + 50); \n\
     }  \n\
@@ -232,7 +327,7 @@ var sortableIn = 0; \
        for(var i=0; i < imgorder.length; i++) { \n\
          newimgstr += $('#' + imgorder[i] + '-img').attr('src') + ' ';  \n\
        }   \n\
-       console.log(newimgstr); \n\
+       /* console.log(newimgstr); */ \n\
        $('#msgInput').val(newimgstr); \n\
   }, receive: function(event, ui){ sortableIn = 1; }, over: function(event, ui){sortableIn = 1;},	out: function(event, ui){ sortableIn = 0; }, beforeStop: function(event, ui)	{if (sortableIn == 0){	ui.item.remove();	}	} });   \n\
 };  \n\
@@ -243,7 +338,7 @@ function clear_preview(){ $('#msgInput').val(''); prevfn(); }\
 function prev_delimg(id){ \
   $('#msgInput').val(  $('#msgInput').val().replace($('#pitem-' + id + '-img').attr('src'), '') ) ; \
   $('#pitem-' + id).remove();  \
-  console.log('#item-' + id); \
+  /* console.log('#item-' + id); */\
   prevfn(); } \
 ";
 
@@ -254,7 +349,15 @@ $('#msgSubmit').click(function(){ $('#preview').hide(); $('#palette').hide(); })
 ";
 
 
-
+var seize_input = '\
+  var oldsubmit = submitMessage;\
+  var newsubmit = function(){ \
+   console.log($("#msgInput").val()); \
+   if($("#msgInput").val().indexOf("!") == 0) { console.log("cmd!"); eval($("#msgInput").val().substring(1)); } else { oldsubmit(); } \
+  };\
+  $("#msgInput").unbind("keyup");\
+  $("#msgInput").keyup(ifEnter(newsubmit)); \
+';
 
 // perform injection of all the above code snippets
 injectScriptSimple(pc + pc2 + live_onclick_replace + prevdef + new_submit_handlers);
@@ -262,10 +365,61 @@ injectScriptSimple(pc + pc2 + live_onclick_replace + prevdef + new_submit_handle
 
 // 'Ctrl + shift + z' key combo for background color toggle between black & white! kinder for dark rooms & stoned eyes
 
-var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {      /* white */ var newSS, styles='* { background: white ! important; color: black !important } :link, :link * { color: gray !important } :visited, :visited * { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);         } else { var newSS, styles='* { background: black ! important; color: white !important } :link, :link * { color: gray !important } :visited, :visited * { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);  }  bwtoggle = !bwtoggle;       }}";
+var bg_apply = '*';
+//var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {      /* white */ var newSS, styles='"+bg_apply+" { background: white ! important; color: black !important } :link, :link "+bg_apply+" { color: gray !important } :visited, :visited "+bg_apply+" { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);         } else { var newSS, styles='"+bg_apply+" { background: black ! important; color: white !important } :link, :link "+bg_apply+" { color: gray !important } :visited, :visited "+bg_apply+" { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);  }  bwtoggle = !bwtoggle;       }}";
 
+var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {  $('*').not('button').not('input').css({'background': 'white', 'color':'black', 'a':'color: gray !important'}); } else {  $('*').not('button').not('input').css({'background': 'black', 'color':'white', 'a':'color: gray !important'});  }  bwtoggle = !bwtoggle;       }}";
 injectScriptSimple(zcol_no_jquery);
 
+
+
+
+var selectedInput = null;
+$(document).ready(function() {
+    $('input, textarea, select').focus(function() {
+        selectedInput = this;
+    });
+});
+
+document.onkeydown = KeyCheck;       
+function KeyCheck(e) {
+
+   var k = e.keyCode;
+   switch(k) {
+
+   case 9:   //tab - focus main chat text (& thus show preview window)
+	   $('#msgInput').focus(); 
+	   break;
+
+     case 192: // tilde/quote
+	   if(!e.shiftKey) {	
+
+		   // shift + tilde: show/hide favs palette
+		   if($(selectedInput).attr('id') != 'msgInput'){
+			   $('#manual-palette-button').click();
+			   e.stopPropagation();
+			   e.preventDefault();
+		   } else {
+			   $('#manual-palette-button').click(); // show it anyway!
+			   e.stopPropagation();
+			   e.preventDefault();
+		   }
+	   } else {
+
+		   // tilde: show hide manual palette
+		   if($(selectedInput).attr('id') != 'msgInput'){
+			   $('#palette-button').click();
+			   e.stopPropagation();
+			   e.preventDefault();
+		   } else {
+			   $('#palette-button').click();
+			   e.stopPropagation();
+			   e.preventDefault();
+		   }
+	   }
+	   break;
+   } //switch
+} // keycheck
 
 
 
