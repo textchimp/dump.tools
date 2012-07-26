@@ -240,7 +240,12 @@ $("img").live("mouseenter", function(e) { \
 }).live("mouseleave", function(e) { \
         last_hover = {};  \
 });\
-';
+\
+\
+$("#msgInput").css("font-size", "12pt").css("top", "18px");\
+$("#webcam-button-upload").hide();\
+$("#footerc").remove(); \
+'; 
 
 
 
@@ -304,7 +309,7 @@ var prevfn = function() {   \n\
 	  if(item.indexOf('http://') == 0 || item.indexOf('https://') == 0) {  \n\
         var urlWithoutParams = item.replace(/\\?.*$/i, \"\"); \n\
         if (urlWithoutParams.match(/\\.(jpg|jpeg|png|gif|bmp|svg|fid)$/i)) {   \n\
- 	      news += '<li id=\"pitem-' + i + '\" style=\"margin: 3px 3px 3px 0; padding: 1px; float: left; max-width: 120px; height: 120px; border: 0px;\"  class=\"pitem\"><img id=\"pitem-' + i + '-img\" src=\"' + item + '\"  / style=\"max-width: 120px; max-height: 120px;\" /></li> ';  \n \
+ 	      news += '<li id=\"pitem-' + i + '\" style=\"margin: 3px 3px 3px 0; padding: 1px; float: left; max-width: 120px; height: 120px; border: 0px;\"  class=\"pitem\"><img id=\"pitem-' + i + '-img\" src=\"' + item + '\"  / style=\"max-width: 120px; max-height: 120px;\" class=\"preview\" /></li> ';  \n \
           total_width += 120; \n\
         }  \n\
 	  } else {  \n\
@@ -368,7 +373,7 @@ injectScriptSimple(pc + pc2 + live_onclick_replace + prevdef + new_submit_handle
 var bg_apply = '*';
 //var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {      /* white */ var newSS, styles='"+bg_apply+" { background: white ! important; color: black !important } :link, :link "+bg_apply+" { color: gray !important } :visited, :visited "+bg_apply+" { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);         } else { var newSS, styles='"+bg_apply+" { background: black ! important; color: white !important } :link, :link "+bg_apply+" { color: gray !important } :visited, :visited "+bg_apply+" { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);  }  bwtoggle = !bwtoggle;       }}";
 
-var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {  $('*').not('button').not('input').css({'background': 'white', 'color':'black', 'a':'color: gray !important'}); } else {  $('*').not('button').not('input').css({'background': 'black', 'color':'white', 'a':'color: gray !important'});  }  bwtoggle = !bwtoggle;       }}";
+var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {  $('" + bg_apply + "').not('button').css({'background': 'white', 'color':'black', 'a':'color: gray !important'}); } else {  $('" + bg_apply + "').not('button').css({'background': 'black', 'color':'white', 'a':'color: gray !important'}); $('#msgInput').css('border', '1px solid gray'); }  bwtoggle = !bwtoggle;       }}";
 injectScriptSimple(zcol_no_jquery);
 
 
