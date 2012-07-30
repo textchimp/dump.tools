@@ -50,6 +50,7 @@ getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.j
 //   },
 // into the "content_scripts" section of manifest.json
 
+/*
 $(document).click(function(e) {
   if (e.shiftKey && e.ctrlKey) {
 	if(e.target.nodeName=='IMG') {
@@ -60,6 +61,7 @@ $(document).click(function(e) {
 	return false;
   }
 });
+*/
 
 
 // key handling
@@ -165,6 +167,7 @@ $(".content").die("click").live("click", function(e) {\
     }\
   }\
 );';
+
 
 var pc2 = '$(document).keydown(function(e){ \
 switch(e.keyCode) {\
@@ -338,6 +341,7 @@ var sortableIn = 0; \
 };  \n\
 $('#msgInput').bind('input', prevfn);   \n\
 $('#msgInput').bind('focus', prevfn);   \n\
+$('#msgInput').bind('click', prevfn);   \n\
 function close_preview(){ $('#preview').hide(); }\
 function clear_preview(){ $('#msgInput').val(''); prevfn(); }\
 function prev_delimg(id){ \
@@ -370,10 +374,31 @@ injectScriptSimple(pc + pc2 + live_onclick_replace + prevdef + new_submit_handle
 
 // 'Ctrl + shift + z' key combo for background color toggle between black & white! kinder for dark rooms & stoned eyes
 
-var bg_apply = '*';
 //var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {      /* white */ var newSS, styles='"+bg_apply+" { background: white ! important; color: black !important } :link, :link "+bg_apply+" { color: gray !important } :visited, :visited "+bg_apply+" { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);         } else { var newSS, styles='"+bg_apply+" { background: black ! important; color: white !important } :link, :link "+bg_apply+" { color: gray !important } :visited, :visited "+bg_apply+" { color: #551A8B !important }'; newSS=document.createElement('link'); newSS.rel='stylesheet'; newSS.href='data:text/css,'+escape(styles); document.getElementsByTagName(\"head\")[0].appendChild(newSS);  }  bwtoggle = !bwtoggle;       }}";
 
-var zcol_no_jquery = "var bwtoggle = false; document.onkeyup = kc; function kc(e){ if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */    if(bwtoggle) {  $('" + bg_apply + "').not('button').css({'background': 'white', 'color':'black', 'a':'color: gray !important'}); } else {  $('" + bg_apply + "').not('button').css({'background': 'black', 'color':'white', 'a':'color: gray !important'}); $('#msgInput').css('border', '1px solid gray'); }  bwtoggle = !bwtoggle;       }}";
+var bg_apply = '*';
+var zcol_no_jquery = "\
+var bwtoggle = false; \
+document.onkeyup = kc; \
+function kc(e){ \
+  if(e.keyCode==90 && e.ctrlKey && e.shiftKey)  {     /* 'z' + ctrl + shift  */ \
+    if(bwtoggle) { \
+      /* white */ \
+      var newSS, styles='"+bg_apply+" { background: white ! important; color: black !important } :link, :link "+bg_apply+" { color: gray !important } :visited, :visited "+bg_apply+" { color: #551A8B !important }'; \
+     newSS=document.createElement('link'); newSS.rel='stylesheet'; \
+     newSS.href='data:text/css,'+escape(styles); \
+     document.getElementsByTagName(\"head\")[0].appendChild(newSS); \
+    } else {  \
+      /* black */ \
+      var newSS, styles='"+bg_apply+" { background: black ! important; color: white !important } :link, :link "+bg_apply+" { color: green !important } :visited, :visited "+bg_apply+" { color: LightBlue !important } #msgInput, button { border: 1px solid gray !important}'; \
+     newSS=document.createElement('link'); newSS.rel='stylesheet'; \
+     newSS.href='data:text/css,'+escape(styles); \
+     document.getElementsByTagName(\"head\")[0].appendChild(newSS); \
+    } \
+    bwtoggle = !bwtoggle; \
+  } \
+}";
+
 injectScriptSimple(zcol_no_jquery);
 
 
