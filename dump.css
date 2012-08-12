@@ -1,3 +1,14 @@
 .ui-draggable-dragging{
   border: 1px solid #aaa;
 }
+
+body #manual-palette {
+	overflow: hidden;
+	padding-right: 0;
+}
+
+#manual-palette-thumbs {
+	height: auto;
+	max-height: 500px;
+	overflow-y: auto;
+}
