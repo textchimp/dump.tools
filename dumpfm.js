@@ -140,7 +140,7 @@ $('#userList').hide();
 $('#showulist').attr('checked', false)
 
 	var live_onclick_replace = '\
-$(".content").die("click").live("click", function(e) {\
+$(".content img, #preview img").die("click").live("click", function(e) {\
   if(!e.ctrlKey && !e.shiftKey){\
       if(typeof e.target.src == "undefined") \
         return false; \
@@ -164,9 +164,12 @@ $(".content").die("click").live("click", function(e) {\
 	}\
 	Tag.favorite(button);\
 	return false;\
-    }\
+    } \
   }\
-);';
+);\
+\
+\
+';
 
 
 var pc2 = '$(document).keydown(function(e){ \
@@ -182,7 +185,7 @@ case 49:  /* 1 */   \
 \
           if(typeof send_to_pb_img !== undefined) send_to_pb_img(last_hover.src); \
 \
-      } else { \
+      } else if(!e.ctrlKey){ \
       togglePBPalette(); \
       } \
     } \
@@ -202,7 +205,7 @@ case 50:  /* 2 */   \
 \
         if( !$("#pb-palette").is(":visible")) { \
           $("#seteditor-select option[value=\'http://tmv.proto.jp/\']").attr("selected", "selected").change(); \
-        } else { \
+        } else if(!e.ctrlKey){ \
         togglePBPalette(); \
         } \
 \
@@ -218,6 +221,7 @@ case 27:  /* escape */ \
   } else if ($("#pb-palette").is(":visible")) { \
     $("#pb-palette").hide(); \
   } else if ($("#manual-palette").is(":visible")) { \
+	manPaletteOpen = false; \
     $("#manual-palette").hide(); \
   } else if ($("#palette").is(":visible")) { \
    paletteHide(); \
@@ -341,6 +345,7 @@ var sortableIn = 0; \
 };  \n\
 $('#msgInput').bind('input', prevfn);   \n\
 $('#msgInput').bind('focus', prevfn);   \n\
+$('#msgInput').bind('change', prevfn);   \n\
 $('#msgInput').bind('click', prevfn);   \n\
 function close_preview(){ $('#preview').hide(); }\
 function clear_preview(){ $('#msgInput').val(''); prevfn(); }\
@@ -567,5 +572,18 @@ function injectScript(source, img)
         return (elem);
 }
 
+$("div.content img").live("click", function(e) {
+		if (e.shiftKey) {
+		chrome.extension.sendRequest({type: "add_manual_fav", url: e.target.src}, function(response) {
+				console.log('response received by sender:', response.status);
+		});
+           console.log(this); return false; 
+		}
+});
 
-
+var s = document.createElement('script');
+s.src = chrome.extension.getURL("favs.js");
+s.onload = function() {
+    this.parentNode.removeChild(this);
+};
+(document.head||document.documentElement).appendChild(s);

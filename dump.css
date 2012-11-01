@@ -1,3 +1,206 @@
 .ui-draggable-dragging{
   border: 1px solid #aaa;
 }
+
+// below, from web version http://textlabs.alwaysdata.net/js/dump.css
+
+#manual-palette{
+ width:400px; 
+ max-height:500px;
+ //overflow-y: hidden !important;
+ overflow: hidden;  //jt
+ padding-right: 0;
+}
+
+#manual-palette-thumbs{
+ float:left; 
+ padding-bottom: 30px;
+  //jt
+ height: 500px;
+ max-height: 500px;
+ overflow-y: auto;
+ width: 370px;
+}
+
+/*
+#manual-palette-thumbs img, #manual-palette-thumbs canvas {
+ min-width:30px; 
+ min-height:30px;
+}
+*/
+
+#manual-palette-widgets{
+  width: 96%;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+#manual-palette-scrollable{
+  overflow-y: auto;
+}
+
+#manual-palette-thumbs img, #manual-palette-thumbs canvas, div.canvas_wrap img {
+ min-width:30px; 
+ min-height:30px;
+ max-width:150px; 
+ max-height:100px;
+ border: 0px; padding: 0px; margin: 0px;
+}
+
+
+#manual-palette-taglist{
+border: 0px;
+ position:  absolute;
+ bottom:  22px;
+ width: 387px; //98%;
+ height: auto;
+ min-height: 10px;
+ margin: 0px;
+ padding: 0 0 0 2px;
+ left: 0px;
+ font-size: 10pt;
+ color: green;
+ display:none;
+ background-color: #fff;
+ border: 0px;
+ z-index: 666666;
+}
+
+#manual-palette-taglist-summary{
+border: 0px;
+ position:  absolute;
+ bottom:  22px;
+ width: 95%; //387px; //98%;
+ height: auto;
+ min-height: 10px;
+ padding: 0 0 0 2px;
+ left: 0px;
+ font-size: 9pt;
+ color: green;
+ background-color: #fff;
+ z-index: 666666;
+}
+
+span.menuicon{ 
+ background-image: url(https://confluence.atlassian.com/download/attachments/218269032/gh-icon-cog-dropdown.png);
+ background-repeat: no-repeat;
+ background-size: 20px 12px;
+ width: auto;
+ min-width: 20px;
+ height: 20px;
+ position: absolute;
+ display: none;
+ z-index: 666666;
+ opacity: 0.7
+}
+
+ul.mymenu{
+ display: none;
+ background-color: #FFF;
+ top: 13px;
+ position: relative;
+ border: 1px solid #ccc;
+ min-width: 40px;
+
+}
+
+ul.mymenu li{
+ background-color: #eee;
+ margin: 1px;
+ padding-left: 2px;
+ padding-right: 2px;
+ cursor: pointer;
+ font-size: 9pt;
+}
+
+ul.mymenu li:hover{ 
+ color: green;
+} 
+
+input.nameinput{
+ width:80px; font-size: 9pt; border: 1px solid gray; color; black; margin-right: 2px;
+}
+
+input.taginput{
+ width:130px; font-size: 9pt; border: 1px solid gray;
+}
+		
+#photoblaster-button{
+ border:1px solid Black;
+ background-color:#EFF5FB;
+ background-position:6px 4px;
+ background-size: 24px;
+ background-repeat:no-repeat;
+ position:absolute;
+// background-image:url(http://www.factor-software.com/images/germs_icon_huge.png);
+background-image:url('chrome-extension://__MSG_@@extension_id__/edit_icon.jpg');
+//background-image:url(http://www.willflyforfood.com/airline-pilot-salary/styles/images/edit_icon.jpg);
+ display: inline-block;
+ width:40px;
+ height:35px;
+ right:205px;
+ top:0;
+ padding-bottom:1;
+ text-align:center;
+ cursor:pointer;
+ font-size:12px;
+ color:white;
+}
+
+#pb-palette{
+ z-index: 333;
+ display: none;
+ width: 900px;
+ height: 450px;
+ position: absolute;
+ top: 17px;
+ right: 24px;
+ border: 2px solid LightBlue;
+ box-shadow: 3px 4px 4px #C8CBCE;
+ padding: 2px;
+
+}
+
+#seteditor{
+ position: absolute;
+ top: 2px;
+ right: 2px;
+ z-index: 444444;
+ display: inline;
+
+}
+
+img.ui-draggable{
+ z-index: 334;
+}
+
+#upload{
+ width: 81px !important; // make room for pb button
+}
+
+#pbframe{
+ width: 900px; 
+ height: 450px;
+}
+
+.hide{
+display: none;
+}
+
+div.canvas_wrap{
+  float: left;
+  //border: 1px solid #eee;
+}
+
+img.anim8{
+ display: inline;
+ position: relative;
+ left: 0; 
+ top: 0;
+}
+
+div.mm{
+border: 1px solid #eee;
+padding: 2px;
+}
