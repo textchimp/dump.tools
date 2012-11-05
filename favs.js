@@ -348,21 +348,37 @@ function manualPaletteBuildImageThumbs() {
 		*/
 		var show_reverse = true;
 		var keys = new Array();
+		var rand_display_count = 20;
 
 		// sort keys of main image array, to show in the correct order
 		// (also perform tag filtering here)
 
 		if(show_reverse) {
 		  // most-recent-first order
-		  for (var k in imgs) {
-		    // apply tag filter
-		    if(filter_tag.length && filter_tag == '(untagged)' && imgs[k].tags.length) {
-			  continue; //skip
-		    } else if(filter_tag.length && (filter_tag != '(all)' && filter_tag != '(untagged)') && $.inArray(filter_tag, imgs[k].tags) == -1) {
-		      continue; //skip
-		    }
-			keys.unshift(k);
-		  }
+			
+		    if(filter_tag.length && filter_tag == '(random)') {
+
+				for(var i=0; i < rand_display_count; i++) {
+					var rimg_key = pickRandomProperty(imgs);
+					// we will sometimes end up with less than 20 random results,
+					// since this code just moves on if the image is already in our random group
+					if($.inArray(rimg_key, keys) == -1)
+						keys.unshift(rimg_key);
+				}
+
+			} else {
+				
+				for (var k in imgs) {
+					// apply tag filter
+					if(filter_tag.length && filter_tag == '(untagged)' && imgs[k].tags.length) {
+						continue; //skip
+					} else if(filter_tag.length && (filter_tag != '(all)' && filter_tag != '(untagged)') && $.inArray(filter_tag, imgs[k].tags) == -1) {
+						continue; //skip
+					}
+					keys.unshift(k);
+				}
+			}
+
 		} else {
 		  // earliest-first order
 		  for (var k in imgs) {
@@ -488,7 +504,9 @@ setTimeout(function(){
 		    $(this).parents('span.menuicon').hide(); 
          });
     }
-}
+} // end fn manualPaletteBuildImageThumbs()
+
+
 
 $('span.menuicon').live('hover', function(e){ 
 
@@ -580,6 +598,7 @@ function buildManualFavTagListDisplay(){
 	var alltags = getManualFavesAllTags();
 	var alltagkeys = getKeys(alltags);
 	alltagkeys.sort();
+	alltagkeys.unshift('(random)');
 	alltagkeys.unshift('(untagged)');
 	alltagkeys.unshift('(all)');
 	var tmp = [];
