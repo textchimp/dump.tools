@@ -79,7 +79,9 @@ http://www.html5rocks.com/en/tutorials/canvas/imagefilters/
 
 // insert JQuery UI, for drag n drop																	  
 // (fast to load Google version (cached), but better to load our own custom, minimal version from dump?)
-$('<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>').appendTo('head');
+
+//TODO: ok to leave this commented out? 
+//$('<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>').appendTo('head');
 
 // insert custom CSS
 $('<link rel="stylesheet" type="text/css" href="http://textlabs.alwaysdata.net/js/dump.css">') .appendTo('head');
@@ -881,16 +883,9 @@ $('#manual-add-url-txt').keypress(function(e){
 	}
 });
 
-$('#manual-add-url-txt').autocomplete({ 
-		source: manual_fav_img_names,
-		open: function(){
-			// style the popup
-			$(this).autocomplete('widget').css({'z-index': '55555555555', 'background-color': '#EFF5FB', 'width': '128px'});
-			return false;
-		}
-});
 
-console.log('loaded dump.js from alwaysdata.net');
+//console.log('loaded dump.js from alwaysdata.net');
+
 
 $('img').live('click', function(e) {
 		if (e.shiftKey) {
@@ -1114,15 +1109,31 @@ $("img").live('click', function(e){
   }
  });
 
+// We seem to need to wait a few seconds before loading the stuff requiring jquery UI,
+// as the UI script is loaded in the dumpfm.js extension and injected into the main dump.fm page
+setTimeout(function(){
+  
+  $( "#manual-palette").resizable({handles: "nw, se, ne, sw"});
+  $( "#pb-palette").resizable({
+    handles: "nw, se, ne, sw",
+    stop: function(event, ui){
+      $("#pbframe").css('width', ui.size.width + 'px').css('height', ui.size.height + 'px');
+    }
+  });
+  
+  
+  $('#manual-add-url-txt').autocomplete({ 
+  		source: manual_fav_img_names,
+  		open: function(){
+  			// style the popup
+  			$(this).autocomplete('widget').css({'z-index': '55555555555', 'background-color': '#EFF5FB', 'width': '128px'});
+  			return false;
+  		}
+  });
+  
+  
+}, 3000);
 
-
-$( "#manual-palette").resizable({handles: "nw, se, ne, sw"});
-$( "#pb-palette").resizable({
-  handles: "nw, se, ne, sw",
-  stop: function(event, ui){
-    $("#pbframe").css('width', ui.size.width + 'px').css('height', ui.size.height + 'px');
-  }
-});
 //, div.resizable" ).resizable();
 //manPaletteToggle();
 
