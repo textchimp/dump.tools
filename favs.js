@@ -82,7 +82,7 @@ http://www.html5rocks.com/en/tutorials/canvas/imagefilters/
 $('<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>').appendTo('head');
 
 // insert custom CSS
-//$('<link rel="stylesheet" type="text/css" href="http://textlabs.alwaysdata.net/js/dump.css">') .appendTo('head');
+$('<link rel="stylesheet" type="text/css" href="http://textlabs.alwaysdata.net/js/dump.css">') .appendTo('head');
 
 var img_thumb_max_width = 150;
 
@@ -92,6 +92,15 @@ function dbg(e) {
 	console.log(arguments.callee.caller.name + '(): ', arguments);
 }
 
+
+function pickRandomProperty(obj) {
+    var result;
+    var count = 0;
+    for (var prop in obj)
+        if (Math.random() < 1/++count)
+           result = prop;
+    return result;
+}
 
 // because keys() is not always defined?!
 function getKeys(obj){
