@@ -9,10 +9,16 @@ textchimp (c) 2012
 Installation:
 -------------
 
-In the 'Extensions' settings page of Chrome, click 'Developer mode' on the top 
-right to bring up a few extra buttons, and then click 'Load unpacked extension';
-you'll be asked to select the extension directory (which is wherever you downloaded
-or checked out this thing to). 
+Download the CRX extension file from here: 
+https://github.com/textchimp/dump.tools/blob/master/dump.tools.crx?raw=true
+Install it in Chrome by pressing Ctrl-o and finding the downloaded file.
+
+[ Unpacked method for Devs:
+  In the 'Extensions' settings page of Chrome, click 'Developer mode' on the top 
+  right to bring up a few extra buttons, and then click 'Load unpacked extension';
+  you'll be asked to select the extension directory (which is wherever you downloaded
+  or checked out this thing to). ]
+
 
 Keyboard bindings:
 ------------------
@@ -23,6 +29,7 @@ ESC: close preview window (also close Favourites panel if open, close Search res
 
 ctrl+shift+z: toggle between white/black background
 
+
 Mouse bindings:
 ---------------
 
@@ -31,7 +38,6 @@ shift-left-click: copy image to permanent favourites
 
 (middle-click? would be nice to use this for copy-to-preview, but i can't
  stop it from performing default behaviour of opening image in a new tab)
-
 
 Right click on any image in any tab and select 'Dump it!' to copy image URL to text 
 input/preview panel.
@@ -48,6 +54,10 @@ Issues:
 * Any text (not image URLs) typed in main text input always shows on the right of all
   images in the preview panel, no matter where it's actually typed relative to the
   URLS... more CSS float tweaking
+
+* Manual favs palette: tag entry popup window disappears beyond right edge of palette
+  window for images which are at the right of the palette (tag popup needs to have position 
+  tested and be re-positioned flush with right edge when necessary)
 
 * Current maximum of 5Mb storage for chrome extensions limits number of permanent
   favourites, as thumbnails are stored using DataURLs. Would be nice to have a way
