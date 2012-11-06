@@ -10,8 +10,8 @@ Installation:
 -------------
 
 Download the CRX extension file from here: 
-https://github.com/textchimp/dump.tools/blob/master/dump.tools.crx?raw=true
-Install it in Chrome by pressing Ctrl-o and finding the downloaded file.
+http://textchimp.github.com/dump.tools/dump.tools.crx
+Chrome should automatically ask you if you want to install it.
 
 [ Unpacked method for Devs:
   In the 'Extensions' settings page of Chrome, click 'Developer mode' on the top 
@@ -23,10 +23,13 @@ Install it in Chrome by pressing Ctrl-o and finding the downloaded file.
 Keyboard bindings:
 ------------------
 
-TAB: show/hide preview panel
+TAB: show preview panel
 ESC: close preview window (also close Favourites panel if open, close Search results if Open)
-  `: show/hide Favourites panel
+  `: show/hide permanent Favourites panel
+shift + `: show/hide old Favs panel
+  1: show/hide Edit/web panel
 
+Enter: submit Dump
 ctrl+shift+z: toggle between white/black background
 
 
