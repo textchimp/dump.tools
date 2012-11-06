@@ -1,4 +1,5 @@
 {
+  "manifest_version": 2,
   "name": "dump.tools",
   "version": "0.1",
   "description": "Dump power!",
@@ -20,9 +21,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://dump.fm/chat*", "http://*.dump.fm/*"],
+      "matches": ["http://dump.fm/*", "http://*.dump.fm/*"],
       "js": ["jquery-1.6.1.js", "dumpfm.js", "manual-favs.js"],
 	  "css": ["dump.css"]
     }
   ]
 }
+/*  "jquery-ui-1.9.1.custom.min.js", */
