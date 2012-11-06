@@ -1034,6 +1034,9 @@ var last_drag_half = '';
 
 var last_drag_target = 0;
 
+// just enable this for me, dragging is broken for other people (esp on OSX)
+if(typeof localStorage.switch_clicks != "undefined" && localStorage.switch_clicks == "true"){ 
+
 $('img:not(.preview)')
 .live("mouseover", function() { 
   if (!$(this).data("init")) { 
@@ -1097,6 +1100,8 @@ $('img:not(.preview)')
 
   }
 }); // end img mouseover draggable stuff
+}
+
 
 // fix dropping into manual palette to add
 /*
@@ -1130,8 +1135,9 @@ $("img").live('click', function(e){
 
 // We seem to need to wait a few seconds before loading the stuff requiring jquery UI,
 // as the UI script is loaded in the dumpfm.js extension and injected into the main dump.fm page
+
 setTimeout(function(){
-  
+
   $( "#manual-palette").resizable({handles: "nw, se, ne, sw"});
   $( "#pb-palette").resizable({
     handles: "nw, se, ne, sw",
@@ -1149,7 +1155,6 @@ setTimeout(function(){
   			return false;
   		}
   });
-  
   
 }, 3000);
 

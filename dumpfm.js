@@ -1,4 +1,6 @@
 
+//$.noConflict(true);
+
 function onRequest(request, sender, sendResponse) {
     if (request.action == 'dump_into') {
         $("#msgInput").val( $("#msgInput").val() + " " + request.url + " " ); 
@@ -32,6 +34,7 @@ function getScript(url,success) {
     }
 
 
+//TODO: ok to leave this commented out? now in manifest.json
 // load jquery UI
 getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js', function(){});
 
@@ -269,14 +272,14 @@ $("#footerc").remove(); \
 
 	var live_onclick_replace = '\
 $(".content").die("click").live("click", function(e) {\
-  if(e.ctrlKey && !e.shiftKey){\
+  if((e.ctrlKey || e.metaKey) && !e.shiftKey){\
       if(typeof e.target.src == "undefined") \
          return false; \
 	  $("#msgInput").val( $("#msgInput").val() + " " + e.target.src + " " );\
 	  $("#msgInput").focus();\
       $("#msgInput").trigger("input"); \
 	  return false;\
-  } else if(!e.shiftKey && !e.ctrlKey){\
+  } else if(!e.shiftKey && !e.metaKey && !e.ctrlKey){\
 	var tagName = e.target.tagName;\
 	if (tagName == "A" || tagName == "EMBED" || $(e.target).hasClass("youtube-thumb")) {\
       return true;\
@@ -581,9 +584,22 @@ $("div.content img").live("click", function(e) {
 		}
 });
 
+// instead of loading Dump with JS url 
+// i.e. http://dump.fm/chat?js=http://textlabs.alwaysdata.net/js/dump.js
 var s = document.createElement('script');
 s.src = chrome.extension.getURL("favs.js");
 s.onload = function() {
     this.parentNode.removeChild(this);
 };
 (document.head||document.documentElement).appendChild(s);
+
+if(localStorage.lights_off == 1) {
+var lightsout = "\
+      var newSS, styles='"+bg_apply+" { background: black ! important; color: white !important } :link, :link "+bg_apply+" { color: green !important } :visited, :visited "+bg_apply+" { color: LightBlue !important } #msgInput, button { border: 1px solid gray !important}'; \
+     newSS=document.createElement('link'); newSS.rel='stylesheet'; \
+     newSS.href='data:text/css,'+escape(styles); \
+     document.getElementsByTagName(\"head\")[0].appendChild(newSS); \
+console.log('lights out!');";
+
+injectScriptSimple(lightsout);
+}
