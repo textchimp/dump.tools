@@ -3,15 +3,24 @@ Dump.tools Chrome extension, v 0.1Beta
 ======================================
 textchimp (c) 2012 
 
-(Tested only on Chromium 18.0.1025.151 (Developer Build 130497) Ubuntu 10.04)
+Tested on:
+Chromium 18.0.1025.151 (Developer Build 130497) on Ubuntu 10.04
+Chrome 22.0.1229.94 on Max OS X 10.7.3
 
 
 Installation:
 -------------
 
+Uninstall or disable old versions of the extension from the Extensions settings 
+page  first (Tools > Extensions).
+
 Download the CRX extension file from here: 
 http://textchimp.github.com/dump.tools/dump.tools.crx
 Chrome should automatically ask you if you want to install it.
+
+If you get an error telling you extensions can only be installed from the Chrome
+Store (i.e. OS X users): Open the Extensions page in Chrome (Tools > Extensions), 
+and drag&drop the downloaded dump.tools.crx file to it from Finder.
 
 [ Unpacked method for Devs:
   Clone the project with git, or download the ZIP from here: 
