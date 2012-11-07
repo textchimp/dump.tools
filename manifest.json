@@ -1,9 +1,12 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 2,  /*** stops context menu item from appearing */
   "name": "dump.tools",
   "version": "0.1",
   "description": "Dump power!",
-  "background_page": "bg.html",
+  /* "background_page": "bg.html", */
+  "background": {
+    "scripts": ["bg.js"]
+  },
   "browser_action": {
     "default_icon": "dump_16.png",
     "popup": "popup.html"
