@@ -606,5 +606,5 @@ var lightsout = "\
      document.getElementsByTagName(\"head\")[0].appendChild(newSS); \
 console.log('lights out!');";
 
-injectScriptSimple(lightsout);
+  injectScriptSimple(lightsout);
 }
