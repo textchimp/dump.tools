@@ -417,6 +417,9 @@ $(document).ready(function() {
     $('input, textarea, select').focus(function() {
         selectedInput = this;
     });
+    $('input, textarea, select').blur(function() {
+        selectedInput = null;
+    });
 });
 
 document.onkeydown = KeyCheck;       
@@ -432,28 +435,30 @@ function KeyCheck(e) {
      case 192: // tilde/quote
 	   if(!e.shiftKey) {	
 
-		   // shift + tilde: show/hide favs palette
+		   // tilde: show hide manual palette
 		   if($(selectedInput).attr('id') != 'msgInput'){
 			   $('#manual-palette-button').click();
 			   e.stopPropagation();
 			   e.preventDefault();
-		   } else {
-			   $('#manual-palette-button').click(); // show it anyway!
-			   e.stopPropagation();
-			   e.preventDefault();
-		   }
+		   } 
+		   //else {
+		   // $('#manual-palette-button').click(); // show it anyway!
+		   //   e.stopPropagation();
+		   //   e.preventDefault();
+		   //}
 	   } else {
 
-		   // tilde: show hide manual palette
+		   // shift + tilde: show/hide favs palette
 		   if($(selectedInput).attr('id') != 'msgInput'){
 			   $('#palette-button').click();
 			   e.stopPropagation();
 			   e.preventDefault();
-		   } else {
-			   $('#palette-button').click();
-			   e.stopPropagation();
-			   e.preventDefault();
-		   }
+		   } //else { console.log(selectedInput); }
+		   //else {
+			   //$('#palette-button').click();
+			   //e.stopPropagation();
+			   //e.preventDefault();
+		   //}
 	   }
 	   break;
    } //switch
@@ -593,7 +598,7 @@ s.onload = function() {
 };
 (document.head||document.documentElement).appendChild(s);
 
-if(localStorage.lights_off == 1) {
+if(localStorage.lights_off !== undefined && localStorage.lights_off == 1) {
 var lightsout = "\
       var newSS, styles='"+bg_apply+" { background: black ! important; color: white !important } :link, :link "+bg_apply+" { color: green !important } :visited, :visited "+bg_apply+" { color: LightBlue !important } #msgInput, button { border: 1px solid gray !important}'; \
      newSS=document.createElement('link'); newSS.rel='stylesheet'; \
