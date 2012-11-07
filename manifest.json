@@ -28,6 +28,7 @@
       "js": ["jquery-1.6.1.js", "dumpfm.js", "manual-favs.js"],
 	  "css": ["dump.css"]
     }
-  ]
+  ],
+  "web_accessible_resources": ["favs.js"]
 }
 /*  "jquery-ui-1.9.1.custom.min.js", */

@@ -86,6 +86,8 @@ http://www.html5rocks.com/en/tutorials/canvas/imagefilters/
 // insert custom CSS
 $('<link rel="stylesheet" type="text/css" href="http://textlabs.alwaysdata.net/js/dump.css">') .appendTo('head');
 
+console.log('======== favs.js');
+
 var img_thumb_max_width = 150;
 
 var debug = 1;
@@ -1157,6 +1159,12 @@ setTimeout(function(){
   });
   
 }, 3000);
+
+// enable text if setting is set
+if(localStorage.show_text !== undefined && localStorage.show_text == 1) {
+  $('#textbutton input').attr('checked', true)
+  setTextEnable.apply($('#textbutton input')[0]);
+}
 
 //, div.resizable" ).resizable();
 //manPaletteToggle();
