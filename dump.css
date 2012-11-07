@@ -134,7 +134,7 @@ input.taginput{
  background-repeat:no-repeat;
  position:absolute;
 // background-image:url(http://www.factor-software.com/images/germs_icon_huge.png);
-background-image:url('chrome-extension://__MSG_@@extension_id__/edit_icon.jpg');
+ background-image:url(chrome-extension://__MSG_@@extension_id__/edit_icon.jpg);
 //background-image:url(http://www.willflyforfood.com/airline-pilot-salary/styles/images/edit_icon.jpg);
  display: inline-block;
  width:40px;
