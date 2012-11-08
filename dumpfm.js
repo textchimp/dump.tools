@@ -608,3 +608,4 @@ console.log('lights out!');";
 
   injectScriptSimple(lightsout);
 }
+

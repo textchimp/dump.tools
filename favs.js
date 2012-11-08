@@ -97,6 +97,10 @@ function dbg(e) {
 }
 
 
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
 function pickRandomProperty(obj) {
     var result;
     var count = 0;
@@ -324,7 +328,8 @@ function manualPaletteBuildImageThumbs() {
 	var debug_urls = '';
     var imgs = getManualFavesImages(); //JSON.parse(localStorage.tc_manual_favs_image
 	dbg('Build (tag: ' + filter_tag + '):', imgs);
-    if (imgs && imgs.length != 0) {
+
+    if (imgs && imgs.length != 0) {   //TODO: skip this test for remote random images etc
 		var name, tags;
 		var filter_tag = getManualFavesCurrentDisplayTag();
         dbg('Build (tag: ' + filter_tag + '):', imgs);
@@ -351,14 +356,13 @@ function manualPaletteBuildImageThumbs() {
 		var show_reverse = true;
 		var keys = new Array();
 		var rand_display_count = 20;
+		
+		var remote_imgs = new Array();
 
 		// sort keys of main image array, to show in the correct order
 		// (also perform tag filtering here)
 
-		if(show_reverse) {
-		  // most-recent-first order
-			
-		    if(filter_tag.length && filter_tag == '(random)') {
+		if(filter_tag.length && filter_tag == '(favs random)') {
 
 				for(var i=0; i < rand_display_count; i++) {
 					var rimg_key = pickRandomProperty(imgs);
@@ -368,50 +372,95 @@ function manualPaletteBuildImageThumbs() {
 						keys.unshift(rimg_key);
 				}
 
-			} else {
-				
-				for (var k in imgs) {
-					// apply tag filter
-					if(filter_tag.length && filter_tag == '(untagged)' && imgs[k].tags.length) {
-						continue; //skip
-					} else if(filter_tag.length && (filter_tag != '(all)' && filter_tag != '(untagged)') && $.inArray(filter_tag, imgs[k].tags) == -1) {
-						continue; //skip
-					}
-					keys.unshift(k);
-				}
-			}
+		} else if(filter_tag.length && filter_tag == '(dump random)') {
 
+				var randy = Math.floor(Math.random()*1000).toString();
+                var success = 0;
+				$("#manual-palette-thumbs").html('Loading random...');
+				$.getJSON('http://dump.fm/cmd/search/' + randy, function(data) {
+				  var limit = 20;
+				  var count = 0;
+				  $.each(data, function(key, val) {
+						  if(endsWith(val.url, 'webcam.jpg'))
+							  return true; //skip webcams!
+						  if(val.url[0]=='/') 
+							  remote_imgs.unshift('http://dump.fm/images' + val.url);
+						  else 
+							  remote_imgs.unshift('http://' + val.url);
+						  if(count++ == limit)
+							  return false; //end
+					  });
+				      console.log(remote_imgs);
+				      success = true;
+					  $("#manual-palette-thumbs").html('');
+					  if(remote_imgs.length) {
+						  for(var j=0; j < remote_imgs.length; j++) {
+							  
+							  var url = remote_imgs[j];
+							  //var img = ;	
+							  divcount++;
+							  
+							  var canvasdiv = '';
+							  debug_urls += url + '\n';
+							  
+							  canvasdiv = '<div class="canvas_wrap" url="' + url + '" id="cw-' + divcount + '"><img  src="' + url + '"></div>';
+							  
+							  $("#manual-palette-thumbs").append('<div class="mm" style="float: left" id="mm-' + divcount + '">' + canvasdiv + '</div>');
+						  }//for
+					  }
+
+				  });
+				if(success) return;
+
+		} else if(show_reverse) {
+			// most-recent-first order
+			
+			for (var k in imgs) {
+				// apply tag filter
+				if(filter_tag.length && filter_tag == '(untagged)' && imgs[k].tags.length) {
+					continue; //skip
+				} else if(filter_tag.length && (filter_tag != '(all)' && filter_tag != '(untagged)') && $.inArray(filter_tag, imgs[k].tags) == -1) {
+					continue; //skip
+				}
+				keys.unshift(k);
+			}
+			
 		} else {
-		  // earliest-first order
-		  for (var k in imgs) {
-		    if(filter_tag.length && filter_tag == '(untagged)' && imgs[k].tags.length) {
-			  continue; //skip
-		    } else if(filter_tag.length && (filter_tag != '(all)' && filter_tag != '(untagged)') && $.inArray(filter_tag, imgs[k].tags) == -1) {
-		      continue; //skip
-		    }
-			keys.push(k);
-		  }
+			// earliest-first order
+			for (var k in imgs) {
+				if(filter_tag.length && filter_tag == '(untagged)' && imgs[k].tags.length) {
+					continue; //skip
+				} else if(filter_tag.length && (filter_tag != '(all)' && filter_tag != '(untagged)') && $.inArray(filter_tag, imgs[k].tags) == -1) {
+					continue; //skip
+				}
+				keys.push(k);
+			}
 		}
+
 
 		//console.log(keys);
 
-		for(var j=0; j < keys.length; j++) {
+		if(keys.length){
+
+			// showing permanent favs of some kind, use localStorage stuff
+
+			for(var j=0; j < keys.length; j++) {
 			
-		  var url = keys[j];
-		  var img = imgs[url];	
+				var url = keys[j];
+				var img = imgs[url];	
 
-		  name = img.name.length ? img.name : 'name';
-		  tags = img.tags.join(', ');
+				name = img.name.length ? img.name : 'name';
+				tags = img.tags.join(', ');
 
-		  divcount++;
-		  var canvasdiv = ''
+				divcount++;
+				var canvasdiv = ''
 				
-			  debug_urls += url + '\n';
+					debug_urls += url + '\n';
   
-		  if(parseUri(url)["file"].toLowerCase().substr(-3) == "gif") {
-			// handle as animated gif, make canvas
-			canvasdiv = '<div class="canvas_wrap animated" url="' + url + '" id="cw-' + divcount + '"></div>';
-		  $("#manual-palette-thumbs").append('\
+				if(parseUri(url)["file"].toLowerCase().substr(-3) == "gif") {
+					// handle as animated gif, make canvas
+					canvasdiv = '<div class="canvas_wrap animated" url="' + url + '" id="cw-' + divcount + '"></div>';
+					$("#manual-palette-thumbs").append('\
 <div class="mm" style="float: left" id="mm-' + divcount + '">\
   <span class="menuicon" >\
   <ul class="mymenu">\
@@ -423,39 +472,39 @@ function manualPaletteBuildImageThumbs() {
 ' + canvasdiv + '\
 </div>');
 
-			if(typeof canvas_store[url] == "undefined") {
+					if(typeof canvas_store[url] == "undefined") {
 
-              var img = new Image();
-			  img.src = url;
-			  img.div_count = divcount;
-			  img.onload = function(){
-			    //count++;
-			    img_store[this.src] = this;
+						var img = new Image();
+						img.src = url;
+						img.div_count = divcount;
+						img.onload = function(){
+							//count++;
+							img_store[this.src] = this;
 			  
-			    // create canvas image, no animation
-			    var c = document.createElement("canvas");
-			    c.width = this.width;
-			    c.height = this.height;
-			    c.id = "c" + $(this).attr('div_count');
-			    c.href = this.src;
-			    c.class = 'cnv';
-			    //console.log('set image width to ' + this.width + 'x' + this.height + ', canvas to ' + c.width + 'x' + c.height);
-			    var ctx = c.getContext('2d');
-			    ctx.drawImage(this, 0, 0, c.width, c.height);
+							// create canvas image, no animation
+							var c = document.createElement("canvas");
+							c.width = this.width;
+							c.height = this.height;
+							c.id = "c" + $(this).attr('div_count');
+							c.href = this.src;
+							c.class = 'cnv';
+							//console.log('set image width to ' + this.width + 'x' + this.height + ', canvas to ' + c.width + 'x' + c.height);
+							var ctx = c.getContext('2d');
+							ctx.drawImage(this, 0, 0, c.width, c.height);
 			  
-			    canvas_store[this.src] = c;
+							canvas_store[this.src] = c;
 		      	
-			    $('#cw-' + $(this).attr('div_count')).append(c); //.addClass(anim)
-		      } // end onload fn
+							$('#cw-' + $(this).attr('div_count')).append(c); //.addClass(anim)
+						} // end onload fn
 			
-			} else {
-				$('#cw-' + divcount).append(canvas_store[url]);
-			}
+					} else {
+						$('#cw-' + divcount).append(canvas_store[url]);
+					}
 
-		  } else {
-			canvasdiv = '<div class="canvas_wrap" url="' + url + '" id="cw-' + divcount + '"><img title="\'' + (name == 'name' ? '(no name)' : name) + '\'\ntags: ' + tags + '" src="' + url + '"></div>';
+				} else {
+					canvasdiv = '<div class="canvas_wrap" url="' + url + '" id="cw-' + divcount + '"><img title="\'' + (name == 'name' ? '(no name)' : name) + '\'\ntags: ' + tags + '" src="' + url + '"></div>';
 
-		  $("#manual-palette-thumbs").append('\
+					$("#manual-palette-thumbs").append('\
 <div class="mm" style="float: left" id="mm-' + divcount + '">\
   <span class="menuicon" >\
   <ul class="mymenu">\
@@ -466,13 +515,9 @@ function manualPaletteBuildImageThumbs() {
 </span>\
 ' + canvasdiv + '\
 </div>');
-
-
-		  }
-		  
-		} // end thumbnail loop
-
-
+				}
+				
+			} // end thumbnail loop
 
 // give img onloads a chance to append canvases etc... actually
 // will need to wait until all canvases are loaded & trigger somehow
@@ -505,8 +550,18 @@ setTimeout(function(){
 			hidenameinput(this);           
 		    $(this).parents('span.menuicon').hide(); 
          });
-    }
+
+
+		} // actually keys.length   // end remote / local cond 
+
+    } // imgs.length
+
 } // end fn manualPaletteBuildImageThumbs()
+
+
+
+
+
 
 
 
@@ -600,7 +655,8 @@ function buildManualFavTagListDisplay(){
 	var alltags = getManualFavesAllTags();
 	var alltagkeys = getKeys(alltags);
 	alltagkeys.sort();
-	alltagkeys.unshift('(random)');
+	alltagkeys.unshift('(dump random)');
+	alltagkeys.unshift('(favs random)');
 	alltagkeys.unshift('(untagged)');
 	alltagkeys.unshift('(all)');
 	var tmp = [];
@@ -1160,11 +1216,20 @@ setTimeout(function(){
   
 }, 3000);
 
+//customisations for ME
+if(localStorage.textchimp !== undefined && localStorage.textchimp == 1) {
+  $('#manual-palette').css('max-height', '780px');
+  $('#manual-palette-thumbs').css('max-height', '780px');
+}
+
+
 // enable text if setting is set
 if(localStorage.show_text !== undefined && localStorage.show_text == 1) {
   $('#textbutton input').attr('checked', true)
   setTextEnable.apply($('#textbutton input')[0]);
 }
+
+
 
 //, div.resizable" ).resizable();
 //manPaletteToggle();

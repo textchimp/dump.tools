@@ -84,4 +84,6 @@ Issues:
   contents by tags. The popup will also get progressively slower to load as more
   favourites are added, even though the thubnails are locally cached...
 
-
+* Canvas caching in the permanent favs list might not make sense for the new
+  features of loading random images from dump, etc - too much mem & time used, 
+  not enough subsequent cache hits to justify it
